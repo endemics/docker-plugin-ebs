@@ -29,3 +29,24 @@ func (_m *Ec2er) DescribeVolumes(_a0 *ec2.DescribeVolumesInput) (*ec2.DescribeVo
 
 	return r0, r1
 }
+func (_m *Ec2er) CreateVolume(_a0 *ec2.CreateVolumeInput) (*ec2.Volume, error) {
+	ret := _m.Called(_a0)
+
+	var r0 *ec2.Volume
+	if rf, ok := ret.Get(0).(func(*ec2.CreateVolumeInput) *ec2.Volume); ok {
+		r0 = rf(_a0)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*ec2.Volume)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(*ec2.CreateVolumeInput) error); ok {
+		r1 = rf(_a0)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}

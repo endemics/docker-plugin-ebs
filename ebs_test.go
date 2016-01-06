@@ -143,3 +143,41 @@ func TestFindReturnsErrorWhenEc2ReturnsError(t *testing.T) {
 
 	assert.Error(t, err, "find should return an error when AWS returns an error")
 }
+
+func TestCreateReturnsVolumeIdWhenCreatingVolume(t *testing.T) {
+	mockOutput := &ec2.Volume{
+		AvailabilityZone: aws.String("eu-west-1a"),
+		CreateTime:       aws.Time(time.Now()),
+		Encrypted:        aws.Bool(false),
+		Iops:             aws.Int64(3),
+		Size:             aws.Int64(1),
+		SnapshotId:       aws.String(""),
+		State:            aws.String("creating"),
+		VolumeId:         aws.String("vol-681e4aac"),
+		VolumeType:       aws.String("gp2"),
+	}
+
+	m := new(mocks.Ec2er)
+	m.On("CreateVolume", mock.AnythingOfType("*ec2.CreateVolumeInput")).Return(mockOutput, nil)
+
+	wrapper := &Ec2Wrapper{m}
+
+	output, err := wrapper.create("label")
+
+	if err != nil {
+		t.Error(err)
+	}
+
+	assert.Equal(t, "vol-681e4aac", output, "create should return the volumeId of the volume created")
+}
+
+func TestCreateReturnsErrorWhenEc2ReturnsError(t *testing.T) {
+	m := new(mocks.Ec2er)
+	m.On("CreateVolume", mock.AnythingOfType("*ec2.CreateVolumeInput")).Return(&ec2.Volume{}, fmt.Errorf("this is a mocked AWS error"))
+
+	wrapper := &Ec2Wrapper{m}
+
+	_, err := wrapper.create("label")
+
+	assert.Error(t, err, "find should return an error when AWS returns an error")
+}

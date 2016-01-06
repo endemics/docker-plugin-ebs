@@ -35,3 +35,19 @@ func (e *Ec2Wrapper) find(label string) (string, error) {
 
 	return *resp.Volumes[0].VolumeId, nil
 }
+
+func (e *Ec2Wrapper) create(label string) (string, error) {
+	params := &ec2.CreateVolumeInput{
+		AvailabilityZone: aws.String("eu-west-1a"),
+		Size:             aws.Int64(1),
+		VolumeType:       aws.String("gp2"),
+	}
+
+	resp, err := e.ec2.CreateVolume(params)
+
+	if err != nil {
+		return "", err
+	}
+
+	return *resp.VolumeId, nil
+}
