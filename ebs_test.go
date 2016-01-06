@@ -24,11 +24,11 @@ func TestFindReturnsIdWhenOneMatchingVolume(t *testing.T) {
 				Tags: []*ec2.Tag{
 					&ec2.Tag{
 						Key:   aws.String("Name"),
-						Value: aws.String("docker1"),
+						Value: aws.String("label"),
 					},
 					&ec2.Tag{
 						Key:   aws.String("DockerVolumeName"),
-						Value: aws.String("docker1"),
+						Value: aws.String("label"),
 					},
 				},
 				VolumeId:   aws.String("vol-681e4aac"),
@@ -42,19 +42,18 @@ func TestFindReturnsIdWhenOneMatchingVolume(t *testing.T) {
 
 	wrapper := &Ec2Wrapper{m}
 
-	output, err := wrapper.find("docker1")
+	output, err := wrapper.find("label")
 
 	if err != nil {
 		t.Error(err)
 	}
 
-	assert.Equal(t, "vol-681e4aac", output)
+	assert.Equal(t, "vol-681e4aac", output, "find should return the volumeId of the volume matching DockerVolumeName=label")
 }
 
 func TestFindReturnsEmptyStringWhenNoMatchingVolume(t *testing.T) {
 	mockOutput := &ec2.DescribeVolumesOutput{
-		Volumes: []*ec2.Volume{
-		},
+		Volumes: []*ec2.Volume{},
 	}
 
 	m := new(mocks.Ec2er)
@@ -62,11 +61,11 @@ func TestFindReturnsEmptyStringWhenNoMatchingVolume(t *testing.T) {
 
 	wrapper := &Ec2Wrapper{m}
 
-	output, err := wrapper.find("nosuchvolume")
+	output, err := wrapper.find("nosuchlabel")
 
 	if err != nil {
 		t.Error(err)
 	}
 
-	assert.Equal(t, "", output)
+	assert.Equal(t, "", output, "find should return an empty string when no volume matches DockerVolumeName=label")
 }
