@@ -10,7 +10,7 @@ import (
 	"time"
 )
 
-func TestFindVolumeReturnsIdWhenOneVolume(t *testing.T) {
+func TestFindReturnsIdWhenOneMatchingVolume(t *testing.T) {
 	mockOutput := &ec2.DescribeVolumesOutput{
 		Volumes: []*ec2.Volume{
 			&ec2.Volume{
@@ -42,7 +42,7 @@ func TestFindVolumeReturnsIdWhenOneVolume(t *testing.T) {
 
 	wrapper := &Ec2Wrapper{m}
 
-	output, err := wrapper.findVolume("docker1")
+	output, err := wrapper.find("docker1")
 
 	if err != nil {
 		t.Error(err)

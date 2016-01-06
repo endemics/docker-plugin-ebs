@@ -5,7 +5,7 @@ import (
 	"github.com/aws/aws-sdk-go/service/ec2"
 )
 
-func (e *Ec2Wrapper) findVolume(label string) (string, error) {
+func (e *Ec2Wrapper) find(label string) (string, error) {
 	params := &ec2.DescribeVolumesInput{
 		Filters: []*ec2.Filter{
 			{
