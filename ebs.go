@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/ec2"
 )
@@ -24,8 +25,12 @@ func (e *Ec2Wrapper) find(label string) (string, error) {
 	}
 
 	if len(resp.Volumes) == 0 {
-		// no volume found, need to create
 		return "", nil
+	}
+
+	if len(resp.Volumes) > 1 {
+		err := fmt.Errorf("Unable to identify EBS volume with tag DockerVolumeName=%s, more than one volume matches\n", label)
+		return "", err
 	}
 
 	return *resp.Volumes[0].VolumeId, nil
