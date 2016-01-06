@@ -22,5 +22,11 @@ func (e *Ec2Wrapper) find(label string) (string, error) {
 	if err != nil {
 		return err.Error(), err
 	}
+
+	if len(resp.Volumes) == 0 {
+		// no volume found, need to create
+		return "", nil
+	}
+
 	return *resp.Volumes[0].VolumeId, nil
 }

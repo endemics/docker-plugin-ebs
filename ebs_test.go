@@ -50,3 +50,23 @@ func TestFindReturnsIdWhenOneMatchingVolume(t *testing.T) {
 
 	assert.Equal(t, "vol-681e4aac", output)
 }
+
+func TestFindReturnsEmptyStringWhenNoMatchingVolume(t *testing.T) {
+	mockOutput := &ec2.DescribeVolumesOutput{
+		Volumes: []*ec2.Volume{
+		},
+	}
+
+	m := new(mocks.Ec2er)
+	m.On("DescribeVolumes", mock.AnythingOfType("*ec2.DescribeVolumesInput")).Return(mockOutput, nil)
+
+	wrapper := &Ec2Wrapper{m}
+
+	output, err := wrapper.find("nosuchvolume")
+
+	if err != nil {
+		t.Error(err)
+	}
+
+	assert.Equal(t, "", output)
+}
