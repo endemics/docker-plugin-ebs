@@ -1,8 +1,8 @@
 package main
 
 import (
-	"fmt"
 	"flag"
+	"fmt"
 	"github.com/docker/go-plugins-helpers/volume"
 	"path/filepath"
 )
