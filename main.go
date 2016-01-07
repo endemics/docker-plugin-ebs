@@ -7,13 +7,9 @@ import (
 	"path/filepath"
 )
 
-const (
-	pluginName = "ebs"
-)
+const pluginName = "ebs"
 
-var (
-	root = flag.String("root", volume.DefaultDockerRootDirectory, "Docker volumes root directory")
-)
+var root = flag.String("root", volume.DefaultDockerRootDirectory, "Docker volumes root directory")
 
 type ebsDriver struct {
 	root string

@@ -6,7 +6,7 @@ import (
 	"github.com/aws/aws-sdk-go/service/ec2"
 )
 
-func (e *Ec2Wrapper) find(label string) (string, error) {
+func (e *EC2Wrapper) find(label string) (string, error) {
 	params := &ec2.DescribeVolumesInput{
 		Filters: []*ec2.Filter{
 			{
@@ -36,7 +36,7 @@ func (e *Ec2Wrapper) find(label string) (string, error) {
 	return *resp.Volumes[0].VolumeId, nil
 }
 
-func (e *Ec2Wrapper) create(label string) (string, error) {
+func (e *EC2Wrapper) create(label string) (string, error) {
 	params := &ec2.CreateVolumeInput{
 		AvailabilityZone: aws.String("eu-west-1a"),
 		Size:             aws.Int64(1),
