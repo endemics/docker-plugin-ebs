@@ -145,6 +145,20 @@ func TestFindReturnsErrorWhenEC2ReturnsError(t *testing.T) {
 }
 
 func TestCreateReturnsVolumeIdWhenCreatingVolume(t *testing.T) {
+	optsTests := []map[string]string{
+		{},
+		{
+			"size": "10",
+		},
+		{
+			"type": "standard",
+		},
+		{
+			"type": "io1",
+			"iops": "1000",
+		},
+	}
+
 	mockOutput := &ec2.Volume{
 		AvailabilityZone: aws.String("eu-west-1a"),
 		CreateTime:       aws.Time(time.Now()),
@@ -162,13 +176,15 @@ func TestCreateReturnsVolumeIdWhenCreatingVolume(t *testing.T) {
 
 	wrapper := &EC2Wrapper{m}
 
-	output, err := wrapper.create("label", map[string]string{})
+	for _, tt := range optsTests {
+		output, err := wrapper.create("label", tt)
 
-	if err != nil {
-		t.Error(err)
+		if err != nil {
+			t.Error(err)
+		}
+
+		assert.Equal(t, "vol-681e4aac", output, "create should return the volumeId of the volume created")
 	}
-
-	assert.Equal(t, "vol-681e4aac", output, "create should return the volumeId of the volume created")
 }
 
 func TestCreateReturnsErrorWhenEC2ReturnsError(t *testing.T) {
@@ -180,6 +196,40 @@ func TestCreateReturnsErrorWhenEC2ReturnsError(t *testing.T) {
 	_, err := wrapper.create("label", map[string]string{})
 
 	assert.Error(t, err, "create should return an error when AWS returns an error")
+}
+
+func TestCreateReturnsErrorWhenSizeOrIopsAreInvalid(t *testing.T) {
+	optsTests := []map[string]string{
+		{
+			"size": "x",
+		},
+		{
+			"iops": "y",
+		},
+	}
+
+	mockOutput := &ec2.Volume{
+		AvailabilityZone: aws.String("eu-west-1a"),
+		CreateTime:       aws.Time(time.Now()),
+		Encrypted:        aws.Bool(false),
+		Iops:             aws.Int64(3),
+		Size:             aws.Int64(1),
+		SnapshotId:       aws.String(""),
+		State:            aws.String("creating"),
+		VolumeId:         aws.String("vol-681e4aac"),
+		VolumeType:       aws.String("gp2"),
+	}
+
+	m := new(mocks.EC2)
+	m.On("CreateVolume", mock.AnythingOfType("*ec2.CreateVolumeInput")).Return(mockOutput, nil)
+
+	wrapper := &EC2Wrapper{m}
+
+	for _, tt := range optsTests {
+		_, err := wrapper.create("label", tt)
+
+		assert.Error(t, err, "create should return an error when size or iops cannot be converted in int64")
+	}
 }
 
 func TestTag(t *testing.T) {

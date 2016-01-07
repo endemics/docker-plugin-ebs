@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/ec2"
+	"strconv"
 )
 
 const (
@@ -44,10 +45,35 @@ func (e *EC2Wrapper) find(label string) (string, error) {
 }
 
 func (e *EC2Wrapper) create(label string, opts map[string]string) (string, error) {
+	var err error
+	size := defaultSize
+	volumeType := defaultVolumeType
+	iops := defaultIops
+
+	if opts["size"] != "" {
+		if size, err = strconv.ParseInt(opts["size"], 10, 64); err != nil {
+			return "", err
+		}
+	}
+
+	if opts["type"] != "" {
+		volumeType = opts["type"]
+	}
+
+	if opts["iops"] != "" {
+		if iops, err = strconv.ParseInt(opts["iops"], 10, 64); err != nil {
+			return "", err
+		}
+	}
+
 	params := &ec2.CreateVolumeInput{
 		AvailabilityZone: aws.String(defaultAZ),
-		Size:             aws.Int64(defaultSize),
-		VolumeType:       aws.String(defaultVolumeType),
+		Size:             aws.Int64(size),
+		VolumeType:       aws.String(volumeType),
+	}
+
+	if volumeType == "io1" {
+		params.Iops = aws.Int64(iops)
 	}
 
 	resp, err := e.ec2.CreateVolume(params)
