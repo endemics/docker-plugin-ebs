@@ -6,6 +6,13 @@ import (
 	"github.com/aws/aws-sdk-go/service/ec2"
 )
 
+const (
+	defaultAZ               = "ap-southeast-2a"
+	defaultVolumeType       = "gp2" // "standard", "io1", "gp2"
+	defaultIops       int64 = 1     // needed only when VolumeType is io1
+	defaultSize       int64 = 1     // in GB
+)
+
 func (e *EC2Wrapper) find(label string) (string, error) {
 	params := &ec2.DescribeVolumesInput{
 		Filters: []*ec2.Filter{
@@ -36,11 +43,11 @@ func (e *EC2Wrapper) find(label string) (string, error) {
 	return *resp.Volumes[0].VolumeId, nil
 }
 
-func (e *EC2Wrapper) create(label string) (string, error) {
+func (e *EC2Wrapper) create(label string, opts map[string]string) (string, error) {
 	params := &ec2.CreateVolumeInput{
-		AvailabilityZone: aws.String("eu-west-1a"),
-		Size:             aws.Int64(1),
-		VolumeType:       aws.String("gp2"),
+		AvailabilityZone: aws.String(defaultAZ),
+		Size:             aws.Int64(defaultSize),
+		VolumeType:       aws.String(defaultVolumeType),
 	}
 
 	resp, err := e.ec2.CreateVolume(params)

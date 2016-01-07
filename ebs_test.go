@@ -162,7 +162,7 @@ func TestCreateReturnsVolumeIdWhenCreatingVolume(t *testing.T) {
 
 	wrapper := &EC2Wrapper{m}
 
-	output, err := wrapper.create("label")
+	output, err := wrapper.create("label", map[string]string{})
 
 	if err != nil {
 		t.Error(err)
@@ -177,7 +177,7 @@ func TestCreateReturnsErrorWhenEC2ReturnsError(t *testing.T) {
 
 	wrapper := &EC2Wrapper{m}
 
-	_, err := wrapper.create("label")
+	_, err := wrapper.create("label", map[string]string{})
 
 	assert.Error(t, err, "create should return an error when AWS returns an error")
 }
