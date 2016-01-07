@@ -181,3 +181,25 @@ func TestCreateReturnsErrorWhenEC2ReturnsError(t *testing.T) {
 
 	assert.Error(t, err, "create should return an error when AWS returns an error")
 }
+
+func TestTag(t *testing.T) {
+	m := new(mocks.EC2)
+	m.On("CreateTags", mock.AnythingOfType("*ec2.CreateTagsInput")).Return(&ec2.CreateTagsOutput{}, nil)
+
+	wrapper := &EC2Wrapper{m}
+
+	err := wrapper.tag("vol-1234beef", "label")
+
+	assert.NoError(t, err, "tag should not return an error when all is fine")
+}
+
+func TestTagReturnsErrorWhenEC2ReturnsError(t *testing.T) {
+	m := new(mocks.EC2)
+	m.On("CreateTags", mock.AnythingOfType("*ec2.CreateTagsInput")).Return(&ec2.CreateTagsOutput{}, fmt.Errorf("this is a mocked AWS error"))
+
+	wrapper := &EC2Wrapper{m}
+
+	err := wrapper.tag("vol-1234beef", "label")
+
+	assert.Error(t, err, "tag should return an error when AWS returns an error")
+}

@@ -51,3 +51,24 @@ func (e *EC2Wrapper) create(label string) (string, error) {
 
 	return *resp.VolumeId, nil
 }
+
+func (e *EC2Wrapper) tag(volumeId string, label string) error {
+	params := &ec2.CreateTagsInput{
+		Resources: []*string{
+			aws.String(volumeId),
+		},
+		Tags: []*ec2.Tag{
+			{
+				Key:   aws.String("Name"),
+				Value: aws.String(label),
+			},
+			{
+				Key:   aws.String("DockerVolumeName"),
+				Value: aws.String(label),
+			},
+		},
+	}
+	_, err := e.ec2.CreateTags(params)
+
+	return err
+}
