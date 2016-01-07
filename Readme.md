@@ -8,7 +8,7 @@ The plugin is meant to be installed on docker hosts in AWS and to have no added 
 
 **This is still a WIP at this point and should not be used ;)**
 
-## volume creation Options
+## Volume Creation Options
 
 The following options are supported as `-o` when calling `docker volume create`:
 - *size*: the size of the volume in GB
