@@ -179,5 +179,5 @@ func TestCreateReturnsErrorWhenEC2ReturnsError(t *testing.T) {
 
 	_, err := wrapper.create("label")
 
-	assert.Error(t, err, "find should return an error when AWS returns an error")
+	assert.Error(t, err, "create should return an error when AWS returns an error")
 }
