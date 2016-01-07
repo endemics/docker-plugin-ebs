@@ -4,11 +4,11 @@ import "github.com/stretchr/testify/mock"
 
 import "github.com/aws/aws-sdk-go/service/ec2"
 
-type EC2er struct {
+type EC2 struct {
 	mock.Mock
 }
 
-func (_m *EC2er) DescribeVolumes(_a0 *ec2.DescribeVolumesInput) (*ec2.DescribeVolumesOutput, error) {
+func (_m *EC2) DescribeVolumes(_a0 *ec2.DescribeVolumesInput) (*ec2.DescribeVolumesOutput, error) {
 	ret := _m.Called(_a0)
 
 	var r0 *ec2.DescribeVolumesOutput
@@ -29,7 +29,7 @@ func (_m *EC2er) DescribeVolumes(_a0 *ec2.DescribeVolumesInput) (*ec2.DescribeVo
 
 	return r0, r1
 }
-func (_m *EC2er) CreateVolume(_a0 *ec2.CreateVolumeInput) (*ec2.Volume, error) {
+func (_m *EC2) CreateVolume(_a0 *ec2.CreateVolumeInput) (*ec2.Volume, error) {
 	ret := _m.Called(_a0)
 
 	var r0 *ec2.Volume

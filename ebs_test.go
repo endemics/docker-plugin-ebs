@@ -38,7 +38,7 @@ func TestFindReturnsIdWhenOneMatchingVolume(t *testing.T) {
 		},
 	}
 
-	m := new(mocks.EC2er)
+	m := new(mocks.EC2)
 	m.On("DescribeVolumes", mock.AnythingOfType("*ec2.DescribeVolumesInput")).Return(mockOutput, nil)
 
 	wrapper := &EC2Wrapper{m}
@@ -57,7 +57,7 @@ func TestFindReturnsEmptyStringWhenNoMatchingVolume(t *testing.T) {
 		Volumes: []*ec2.Volume{},
 	}
 
-	m := new(mocks.EC2er)
+	m := new(mocks.EC2)
 	m.On("DescribeVolumes", mock.AnythingOfType("*ec2.DescribeVolumesInput")).Return(mockOutput, nil)
 
 	wrapper := &EC2Wrapper{m}
@@ -119,7 +119,7 @@ func TestFindReturnsErrorIfMoreThanOneVolumeMatchesLabel(t *testing.T) {
 		},
 	}
 
-	m := new(mocks.EC2er)
+	m := new(mocks.EC2)
 	m.On("DescribeVolumes", mock.AnythingOfType("*ec2.DescribeVolumesInput")).Return(mockOutput, nil)
 
 	wrapper := &EC2Wrapper{m}
@@ -134,7 +134,7 @@ func TestFindReturnsErrorWhenEC2ReturnsError(t *testing.T) {
 		Volumes: []*ec2.Volume{},
 	}
 
-	m := new(mocks.EC2er)
+	m := new(mocks.EC2)
 	m.On("DescribeVolumes", mock.AnythingOfType("*ec2.DescribeVolumesInput")).Return(mockOutput, fmt.Errorf("this is a mocked AWS error"))
 
 	wrapper := &EC2Wrapper{m}
@@ -157,7 +157,7 @@ func TestCreateReturnsVolumeIdWhenCreatingVolume(t *testing.T) {
 		VolumeType:       aws.String("gp2"),
 	}
 
-	m := new(mocks.EC2er)
+	m := new(mocks.EC2)
 	m.On("CreateVolume", mock.AnythingOfType("*ec2.CreateVolumeInput")).Return(mockOutput, nil)
 
 	wrapper := &EC2Wrapper{m}
@@ -172,7 +172,7 @@ func TestCreateReturnsVolumeIdWhenCreatingVolume(t *testing.T) {
 }
 
 func TestCreateReturnsErrorWhenEC2ReturnsError(t *testing.T) {
-	m := new(mocks.EC2er)
+	m := new(mocks.EC2)
 	m.On("CreateVolume", mock.AnythingOfType("*ec2.CreateVolumeInput")).Return(&ec2.Volume{}, fmt.Errorf("this is a mocked AWS error"))
 
 	wrapper := &EC2Wrapper{m}
