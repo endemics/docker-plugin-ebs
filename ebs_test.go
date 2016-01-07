@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/ec2"
 	"github.com/endemics/docker-plugin-ebs/mocks"
@@ -126,4 +127,19 @@ func TestFindReturnsErrorIfMoreThanOneVolumeMatchesLabel(t *testing.T) {
 	_, err := wrapper.find("label")
 
 	assert.Error(t, err, "find should return an error when more than one volume matches the label")
+}
+
+func TestFindReturnsErrorWhenEc2ReturnsError(t *testing.T) {
+	mockOutput := &ec2.DescribeVolumesOutput{
+		Volumes: []*ec2.Volume{},
+	}
+
+	m := new(mocks.Ec2er)
+	m.On("DescribeVolumes", mock.AnythingOfType("*ec2.DescribeVolumesInput")).Return(mockOutput, fmt.Errorf("this is a mocked AWS error"))
+
+	wrapper := &Ec2Wrapper{m}
+
+	_, err := wrapper.find("label")
+
+	assert.Error(t, err, "find should return an error when AWS returns an error")
 }
