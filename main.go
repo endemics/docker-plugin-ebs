@@ -50,6 +50,6 @@ func (e ebsDriver) Unmount(r volume.Request) volume.Response {
 func main() {
 	d := ebsDriver{*root}
 	h := volume.NewHandler(d)
+	fmt.Printf("Starting listening on unix socket with name %s (usually in /run/docker/plugins/%s)\n", pluginName, pluginName)
 	h.ServeUnix("root", pluginName)
-	fmt.Printf("Starting listening on unix socket with name %s (usually in /run/docker/plugins/%s)", pluginName, pluginName)
 }
